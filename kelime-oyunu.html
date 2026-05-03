@@ -9,62 +9,106 @@
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
-  --green:#22c55e; --blue:#3b82f6; --red:#ef4444;
-  --text:#1e293b; --muted:#64748b; --border:#e2e8f0;
+  --bg:       #0f1117;
+  --bg2:      #1a1d27;
+  --bg3:      #22263a;
+  --card:     #1e2235;
+  --border:   #2e3350;
+  --green:    #22c55e;
+  --blue:     #3b82f6;
+  --purple:   #a78bfa;
+  --red:      #ef4444;
+  --orange:   #f97316;
+  --text:     #e8eaf6;
+  --muted:    #7c85b0;
+  --subtext:  #a0a8c8;
 }
 body {
   font-family:'Nunito',sans-serif;
-  background:linear-gradient(160deg,#eef4ff 0%,#f0fdf4 100%);
+  background: var(--bg);
   min-height:100vh; display:flex; justify-content:center;
   align-items:flex-start; padding:20px 16px 60px;
+  color: var(--text);
 }
 #app { width:100%; max-width:440px; }
-.card { background:#fff; border-radius:24px; box-shadow:0 8px 40px rgba(59,130,246,.10); padding:24px 20px; animation:fadeIn .35s ease; }
+
+.card {
+  background: var(--card);
+  border-radius:24px;
+  box-shadow: 0 8px 40px rgba(0,0,0,.4);
+  padding:24px 20px;
+  animation:fadeIn .35s ease;
+  border: 1px solid var(--border);
+}
 
 /* upload */
 .upload-hero { text-align:center; margin-bottom:28px; }
 .upload-hero .emoji { font-size:56px; display:block; margin-bottom:8px; }
 .upload-hero h1 { font-size:26px; font-weight:900; color:var(--text); }
 .upload-hero p  { color:var(--muted); margin-top:6px; font-size:15px; }
+
 .drop-zone {
-  border:2.5px dashed #93c5fd; border-radius:20px; padding:36px 24px;
-  text-align:center; background:#f0f9ff; cursor:pointer; transition:all .2s; margin-bottom:16px;
+  border:2.5px dashed #3b82f6aa;
+  border-radius:20px; padding:36px 24px;
+  text-align:center; background:var(--bg2);
+  cursor:pointer; transition:all .2s; margin-bottom:16px;
 }
-.drop-zone:active,.drop-zone.drag { border-color:var(--green); background:#f0fdf4; }
+.drop-zone:active,.drop-zone.drag { border-color:var(--green); background:#0d2218; }
 .drop-zone .dz-icon { font-size:44px; margin-bottom:8px; }
 .drop-zone p { color:var(--blue); font-weight:700; font-size:16px; }
 .drop-zone small { color:var(--muted); font-size:13px; }
-.error-box { background:#fff1f2; border:1.5px solid #fca5a5; border-radius:12px; padding:12px 16px; color:var(--red); font-size:14px; margin-bottom:16px; display:none; }
-.format-guide { background:#fff; border-radius:18px; border:1.5px solid var(--border); padding:16px 18px; }
+
+.error-box {
+  background:#2a1215; border:1.5px solid #7f1d1d;
+  border-radius:12px; padding:12px 16px;
+  color:#fca5a5; font-size:14px; margin-bottom:16px; display:none;
+}
+
+.format-guide {
+  background:var(--bg2); border-radius:18px;
+  border:1.5px solid var(--border); padding:16px 18px;
+}
 .format-guide h3 { font-size:13px; font-weight:800; color:var(--text); margin-bottom:10px; }
 .format-guide table { width:100%; border-collapse:collapse; font-size:11px; overflow-x:auto; display:block; }
-.format-guide th { background:var(--blue); color:#fff; padding:6px 8px; text-align:left; white-space:nowrap; font-weight:700; }
-.format-guide td { padding:5px 8px; color:#475569; border-top:1px solid var(--border); white-space:nowrap; }
+.format-guide th { background:#1d4ed8; color:#fff; padding:6px 8px; text-align:left; white-space:nowrap; font-weight:700; }
+.format-guide td { padding:5px 8px; color:var(--subtext); border-top:1px solid var(--border); white-space:nowrap; }
 .format-guide .note { color:var(--muted); font-size:12px; margin-top:8px; }
 
-/* mood */
-.mood-bar { background:#f0fdf4; border:2px solid var(--green); border-radius:18px; padding:14px 20px; margin-bottom:18px; }
-.mood-emojis { display:flex; gap:14px; justify-content:center; margin-bottom:8px; }
-.mood-emojis span { font-size:24px; transition:all .3s; filter:grayscale(.5) opacity(.4); }
-.mood-emojis span.active { font-size:36px; filter:none; transform:scale(1.2); }
-.mood-track { display:flex; gap:3px; height:10px; border-radius:8px; overflow:hidden; }
-.mood-track div { flex:1; border-radius:4px; opacity:.2; transition:opacity .4s; }
-.mood-track div.lit { opacity:1; }
+/* score bar (replaces mood bar) */
+.score-bar {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius:14px; padding:12px 16px;
+  margin-bottom:18px;
+  display:flex; align-items:center; gap:14px;
+}
+.score-num {
+  font-size:28px; font-weight:900;
+  min-width:48px; text-align:center;
+}
+.score-track { flex:1; height:8px; background:var(--bg3); border-radius:8px; overflow:hidden; }
+.score-fill  { height:100%; border-radius:8px; transition:width .5s ease, background .5s ease; }
+.score-label { font-size:12px; color:var(--muted); font-weight:700; min-width:60px; text-align:right; }
 
 /* top bar */
 .top-bar { display:flex; align-items:center; gap:10px; margin-bottom:16px; }
 .top-bar .back-btn { background:none; border:none; font-size:22px; cursor:pointer; color:var(--muted); padding:0; }
 .top-bar h2 { font-size:19px; font-weight:900; color:var(--text); flex:1; }
-.streak-badge { background:#fef3c7; color:#d97706; border-radius:20px; padding:3px 12px; font-size:13px; font-weight:700; }
-.progress-track { height:8px; background:var(--border); border-radius:8px; margin-bottom:18px; overflow:hidden; }
+.streak-badge { background:#422006; color:#fb923c; border-radius:20px; padding:3px 12px; font-size:13px; font-weight:700; }
+
+.progress-track { height:6px; background:var(--bg3); border-radius:8px; margin-bottom:18px; overflow:hidden; }
 .progress-fill  { height:100%; background:linear-gradient(90deg,var(--blue),var(--green)); border-radius:8px; transition:width .5s ease; }
 
 /* word card */
-.word-card { background:#f8faff; border-radius:16px; padding:18px 18px 14px; margin-bottom:14px; border:1px solid #dbeafe; }
+.word-card {
+  background:var(--bg2); border-radius:16px;
+  padding:18px 18px 14px; margin-bottom:14px;
+  border:1px solid var(--border);
+}
 .word-card .label { font-size:11px; color:var(--muted); font-weight:700; letter-spacing:1px; margin-bottom:8px; }
 .word-card .big-word { font-size:32px; font-weight:900; color:var(--green); margin-bottom:2px; }
-.word-card .phonetic { font-size:14px; color:#7c3aed; font-style:italic; margin-bottom:4px; }
-.word-card .translation { font-size:15px; color:var(--muted); font-style:italic; margin-bottom:10px; }
+.word-card .phonetic { font-size:14px; color:var(--purple); font-style:italic; margin-bottom:4px; }
+.word-card .translation { font-size:15px; color:var(--subtext); font-style:italic; margin-bottom:10px; }
 .word-card .sentence { font-size:17px; line-height:1.65; font-weight:600; color:var(--text); }
 .word-card .sentence .hl { color:var(--green); font-weight:800; }
 .word-card .sentence-tr { font-size:13px; color:var(--muted); font-style:italic; margin-top:6px; }
@@ -75,39 +119,44 @@ body {
   flex:1; display:flex; align-items:center; justify-content:center; gap:6px;
   padding:10px 8px; border:none; border-radius:12px; font-family:'Nunito',sans-serif;
   font-size:13px; font-weight:700; cursor:pointer; transition:all .15s;
-  -webkit-tap-highlight-color:transparent;
 }
 .tts-btn:active { transform:scale(.96); }
-.tts-word     { background:#eff6ff; color:#1d4ed8; }
-.tts-sentence { background:#f0fdf4; color:#15803d; }
-.tts-btn.speaking { opacity:.6; }
+.tts-word     { background:#1e3a5f; color:#93c5fd; }
+.tts-sentence { background:#0d2218; color:#86efac; }
 
 /* pronunciation panel */
-.pronun-panel { background:#faf5ff; border:1.5px solid #d8b4fe; border-radius:16px; padding:16px; margin-bottom:14px; }
-.pronun-panel h4 { font-size:13px; font-weight:800; color:#6d28d9; margin-bottom:10px; }
-.pronun-target { font-size:16px; font-weight:700; color:var(--text); background:#ede9fe; border-radius:10px; padding:10px 12px; margin-bottom:12px; line-height:1.6; }
-.pronun-target .hl { color:#7c3aed; font-weight:900; }
+.pronun-panel {
+  background:var(--bg2); border:1.5px solid #4c1d95;
+  border-radius:16px; padding:16px; margin-bottom:14px;
+}
+.pronun-panel h4 { font-size:13px; font-weight:800; color:var(--purple); margin-bottom:10px; }
+.pronun-target {
+  font-size:16px; font-weight:700; color:var(--text);
+  background:#1e1635; border-radius:10px; padding:10px 12px;
+  margin-bottom:12px; line-height:1.6;
+}
+.pronun-target .hl { color:var(--purple); font-weight:900; }
 
-/* mic button */
+/* mic */
 .mic-wrap { display:flex; flex-direction:column; align-items:center; gap:8px; }
 .mic-btn {
   width:70px; height:70px; border-radius:50%; border:none; cursor:pointer;
   display:flex; align-items:center; justify-content:center;
-  font-size:28px; transition:all .2s; -webkit-tap-highlight-color:transparent;
-  box-shadow:0 4px 18px rgba(0,0,0,.15);
+  font-size:28px; transition:all .2s;
+  box-shadow:0 4px 20px rgba(0,0,0,.4);
 }
 .mic-btn.idle    { background:linear-gradient(135deg,#7c3aed,#6d28d9); }
 .mic-btn.rec     { background:linear-gradient(135deg,#ef4444,#dc2626); animation:pulse .7s infinite; }
-.mic-btn.loading { background:#94a3b8; }
+.mic-btn.loading { background:#334155; }
 .mic-btn:active  { transform:scale(.92); }
-.mic-label { font-size:13px; font-weight:700; color:#6d28d9; }
+.mic-label { font-size:13px; font-weight:700; color:var(--purple); }
 .mic-label.rec-lbl { color:var(--red); }
 
-/* live transcript */
 .live-transcript {
-  min-height:36px; background:#fff; border-radius:10px; padding:8px 12px;
-  font-size:14px; color:var(--muted); font-style:italic; margin-top:10px;
-  border:1.5px dashed #d8b4fe; display:none; line-height:1.5;
+  display:none; min-height:36px; background:var(--bg3);
+  border-radius:10px; padding:8px 12px;
+  font-size:14px; color:var(--muted); font-style:italic;
+  margin-top:10px; border:1.5px dashed #4c1d95; line-height:1.5;
 }
 .live-transcript.visible { display:block; }
 .live-transcript .heard { color:var(--text); font-style:normal; font-weight:700; }
@@ -115,45 +164,65 @@ body {
 /* result */
 .pronun-result { margin-top:12px; }
 .score-ring-wrap { display:flex; align-items:center; gap:14px; margin-bottom:10px; }
-.score-ring { width:64px; height:64px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:20px; font-weight:900; color:#fff; flex-shrink:0; box-shadow:0 4px 14px rgba(0,0,0,.15); }
+.score-ring {
+  width:64px; height:64px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:20px; font-weight:900; color:#fff; flex-shrink:0;
+  box-shadow:0 4px 14px rgba(0,0,0,.4);
+}
 .score-ring.excellent { background:linear-gradient(135deg,#22c55e,#16a34a); }
 .score-ring.good      { background:linear-gradient(135deg,#3b82f6,#1d4ed8); }
 .score-ring.fair      { background:linear-gradient(135deg,#f97316,#ea580c); }
 .score-ring.poor      { background:linear-gradient(135deg,#ef4444,#dc2626); }
-.score-detail .score-label { font-size:15px; font-weight:800; color:var(--text); }
-.score-detail .score-sub   { font-size:13px; color:var(--muted); margin-top:2px; }
-.word-comparison { margin-top:10px; background:#fff; border-radius:10px; padding:10px 12px; font-size:13px; line-height:1.8; }
-.word-comparison .w-correct { color:#15803d; font-weight:800; }
-.word-comparison .w-wrong   { color:var(--red); font-weight:800; text-decoration:line-through; }
-.word-comparison .w-missing { color:#f97316; font-weight:700; font-style:italic; }
-.pronun-tip { margin-top:8px; background:#faf5ff; border-radius:10px; padding:10px 12px; font-size:13px; color:#374151; line-height:1.6; }
+.score-detail .score-label-txt { font-size:15px; font-weight:800; color:var(--text); }
+.score-detail .score-sub       { font-size:13px; color:var(--muted); margin-top:2px; }
 
-.retry-btn {
-  width:100%; margin-top:10px; padding:10px; background:#ede9fe; color:#6d28d9;
-  border:none; border-radius:12px; font-family:'Nunito',sans-serif;
-  font-size:14px; font-weight:800; cursor:pointer;
+.word-comparison {
+  margin-top:10px; background:var(--bg3);
+  border-radius:10px; padding:10px 12px;
+  font-size:13px; line-height:1.9;
 }
+.w-correct { color:#4ade80; font-weight:800; }
+.w-wrong   { color:var(--red); font-weight:800; text-decoration:line-through; }
+.w-missing { color:var(--orange); font-weight:700; font-style:italic; }
+
+.pronun-tip {
+  margin-top:8px; background:#1e1635;
+  border-radius:10px; padding:10px 12px;
+  font-size:13px; color:var(--subtext); line-height:1.6;
+}
+
+/* playback row */
+.playback-row { display:flex; gap:8px; margin-top:10px; }
+.playback-btn {
+  flex:1; padding:9px; border:none; border-radius:11px;
+  font-family:'Nunito',sans-serif; font-size:13px; font-weight:700;
+  cursor:pointer; transition:all .15s;
+}
+.playback-btn:active { transform:scale(.96); }
+.play-rec-btn  { background:#1e3a5f; color:#93c5fd; }
+.retry-btn     { background:#1e1635; color:var(--purple); }
 
 /* quiz */
 .quiz-question { font-size:13px; color:var(--muted); font-weight:700; margin-bottom:10px; }
 .options { display:flex; flex-direction:column; gap:10px; margin-bottom:16px; }
 .opt-btn {
-  background:#f1f5f9; border:2px solid var(--border); color:var(--text);
+  background:var(--bg2); border:2px solid var(--border); color:var(--text);
   border-radius:14px; padding:13px 16px; font-size:15px; font-weight:700;
   cursor:pointer; text-align:left; font-family:'Nunito',sans-serif; transition:all .15s;
-  -webkit-tap-highlight-color:transparent;
 }
-.opt-btn.correct { background:#f0fdf4; border-color:var(--green); color:#15803d; }
-.opt-btn.wrong   { background:#fff1f2; border-color:#fca5a5; color:var(--red); }
-.opt-btn.faded   { background:#f8fafc; color:#94a3b8; }
+.opt-btn:active  { transform:scale(.98); }
+.opt-btn.correct { background:#052e16; border-color:#22c55e; color:#4ade80; }
+.opt-btn.wrong   { background:#2a1215; border-color:#ef4444; color:#fca5a5; }
+.opt-btn.faded   { opacity:.4; }
 
-/* ai feedback */
-.ai-box { border-radius:14px; padding:13px 15px; margin-bottom:14px; font-size:14px; color:#374151; line-height:1.6; }
-.ai-box.ok   { background:#f0fdf4; border:1.5px solid #86efac; }
-.ai-box.fail { background:#fff7ed; border:1.5px solid #fed7aa; }
+/* feedback */
+.ai-box { border-radius:14px; padding:13px 15px; margin-bottom:14px; font-size:14px; color:var(--subtext); line-height:1.6; }
+.ai-box.ok   { background:#052e16; border:1.5px solid #166534; }
+.ai-box.fail { background:#1c0a00; border:1.5px solid #7c2d12; }
 .ai-box .ai-label { font-weight:800; margin-bottom:4px; }
-.ai-box .ai-label.ok-lbl   { color:#15803d; }
-.ai-box .ai-label.fail-lbl { color:#c2410c; }
+.ai-box .ai-label.ok-lbl   { color:#4ade80; }
+.ai-box .ai-label.fail-lbl { color:#fb923c; }
 
 /* buttons */
 .btn-primary {
@@ -161,18 +230,27 @@ body {
   border-radius:16px; font-size:17px; font-weight:800; cursor:pointer;
   font-family:'Nunito',sans-serif; transition:opacity .15s;
 }
-.btn-primary:active { opacity:.85; }
-.btn-primary.green { background:var(--green); }
-.btn-primary:disabled { background:#94a3b8; cursor:not-allowed; }
-.btn-secondary { width:100%; padding:13px; background:#fff; color:var(--blue); border:2px solid var(--blue); border-radius:16px; font-size:16px; font-weight:700; cursor:pointer; font-family:'Nunito',sans-serif; margin-top:10px; }
-.counter { text-align:center; margin-top:12px; color:#94a3b8; font-size:14px; font-weight:600; }
+.btn-primary:active { opacity:.8; }
+.btn-primary.green { background:var(--green); color:#052e16; }
+.btn-primary:disabled { background:#334155; cursor:not-allowed; }
+.btn-secondary {
+  width:100%; padding:13px; background:transparent; color:var(--blue);
+  border:2px solid var(--blue); border-radius:16px; font-size:16px; font-weight:700;
+  cursor:pointer; font-family:'Nunito',sans-serif; margin-top:10px;
+}
+.counter { text-align:center; margin-top:12px; color:var(--muted); font-size:14px; font-weight:600; }
 
 /* done */
 .done-screen { text-align:center; }
 .done-screen .trophy { font-size:64px; margin-bottom:10px; animation:pop .6s ease; }
 .done-screen h2 { font-size:24px; font-weight:900; color:var(--text); margin-bottom:8px; }
 .done-screen p { color:var(--muted); margin-bottom:20px; }
-.score-box { background:#f0fdf4; border-radius:14px; padding:12px 18px; margin-bottom:20px; color:#15803d; font-weight:800; font-size:20px; }
+.final-score-box {
+  background:var(--bg2); border:1px solid var(--border);
+  border-radius:16px; padding:16px 20px; margin-bottom:20px;
+}
+.final-score-big { font-size:48px; font-weight:900; color:var(--green); }
+.final-score-sub { font-size:14px; color:var(--muted); margin-top:4px; }
 
 .screen { display:none; }
 .screen.active { display:block; }
@@ -223,9 +301,12 @@ body {
   <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
 
   <div class="card" id="mainCard">
-    <div class="mood-bar">
-      <div class="mood-emojis" id="moodEmojis"></div>
-      <div class="mood-track"  id="moodTrack"></div>
+
+    <!-- Score bar -->
+    <div class="score-bar" id="scoreBar">
+      <div class="score-num" id="scoreNum">100</div>
+      <div class="score-track"><div class="score-fill" id="scoreFill" style="width:100%;background:var(--green)"></div></div>
+      <div class="score-label" id="scoreBarLabel">Mükemmel</div>
     </div>
 
     <div class="word-card" id="wordCard"></div>
@@ -245,7 +326,10 @@ body {
       </div>
       <div class="live-transcript" id="liveTranscript"></div>
       <div class="pronun-result" id="pronunResult" style="display:none"></div>
-      <button class="retry-btn" id="retryBtn" onclick="resetPronun()" style="display:none">🔄 Tekrar Dene</button>
+      <div class="playback-row" id="playbackRow" style="display:none">
+        <button class="playback-btn play-rec-btn" id="playRecBtn" onclick="playRecording()">▶ Kaydımı Dinle</button>
+        <button class="playback-btn retry-btn" onclick="resetPronun()">🔄 Tekrar</button>
+      </div>
     </div>
 
     <!-- Quiz -->
@@ -268,11 +352,10 @@ body {
     <div class="trophy">🎉</div>
     <h2>Tebrikler!</h2>
     <p id="doneMsg"></p>
-    <div class="mood-bar">
-      <div class="mood-emojis" id="doneMoodEmojis"></div>
-      <div class="mood-track"  id="doneMoodTrack"></div>
+    <div class="final-score-box">
+      <div class="final-score-big" id="finalScoreBig"></div>
+      <div class="final-score-sub" id="finalScoreSub"></div>
     </div>
-    <div class="score-box" id="scoreBox"></div>
     <button class="btn-primary"   onclick="restartQuiz()">🔄 Tekrar Başla</button>
     <button class="btn-secondary" onclick="goUpload()">📂 Başka Dosya Yükle</button>
   </div>
@@ -281,17 +364,48 @@ body {
 </div>
 <script>
 // ── State ─────────────────────────────────────────────────
-let words=[], idx=0, score=100, streak=0, correctCount=0;
+let words=[], allWords=[], idx=0, score=100, streak=0, correctCount=0;
 let phase="learn", currentOptions=[];
 let recognition=null, isListening=false;
+let lastAudioBlob=null, lastAudioURL=null, audioPlayer=null;
+let mediaRecorder=null, audioChunks=[];
+let learnedSet=new Set(); // words answered correctly
+let fileKey=""; // unique key per file
 
-const MOOD_COLORS=["#ef4444","#f97316","#a78bfa","#86efac","#22c55e"];
-const MOOD_EMOJIS=["😠","😟","😐","🙂","😊"];
+// ── Progress persistence ──────────────────────────────────
+function makeFileKey(parsed){
+  // key = first 3 words joined, stable per file
+  return "wm_"+parsed.slice(0,3).map(w=>w.word).join("_");
+}
+function saveProgress(){
+  try{
+    localStorage.setItem(fileKey, JSON.stringify({
+      learnedWords:[...learnedSet],
+      score, streak, correctCount
+    }));
+  }catch(e){}
+}
+function loadProgress(){
+  try{
+    const raw=localStorage.getItem(fileKey);
+    if(!raw) return false;
+    const d=JSON.parse(raw);
+    learnedSet=new Set(d.learnedWords||[]);
+    score=d.score??100;
+    streak=d.streak??0;
+    correctCount=d.correctCount??0;
+    return learnedSet.size>0;
+  }catch(e){return false;}
+}
+function clearProgress(){
+  try{localStorage.removeItem(fileKey);}catch(e){}
+  learnedSet=new Set();
+}
+
+const MOOD_COLORS=["#ef4444","#f97316","#a78bfa","#22c55e","#22c55e"];
 
 // ── File upload ───────────────────────────────────────────
-document.getElementById("fileInput").addEventListener("change",e=>{
-  if(e.target.files[0]) loadFile(e.target.files[0]);
-});
+document.getElementById("fileInput").addEventListener("change",e=>{if(e.target.files[0])loadFile(e.target.files[0]);});
 const dz=document.getElementById("dropZone");
 dz.addEventListener("dragover",e=>{e.preventDefault();dz.classList.add("drag");});
 dz.addEventListener("dragleave",()=>dz.classList.remove("drag"));
@@ -313,7 +427,21 @@ function loadFile(file){
         highlights:String(r.highlights||r.word).split(",").map(h=>h.trim()),
       }));
       if(parsed.length<2){showError("En az 2 kelime gerekli.");return;}
-      words=parsed; startSession();
+      allWords=parsed;
+      fileKey=makeFileKey(parsed);
+      const hasProgress=loadProgress();
+      words=allWords.filter(w=>!learnedSet.has(w.word));
+      if(words.length===0){
+        if(confirm("🎉 Bu dosyadaki tüm kelimeleri öğrendin!\n\nBaştan başlamak ister misin?")){
+          clearProgress();words=[...allWords];startSession();
+        }
+        return;
+      }
+      if(hasProgress&&learnedSet.size>0){
+        const cont=confirm("📖 Kaldığın yerden devam et?\n\n✅ Öğrenilen: "+learnedSet.size+" kelime\n📚 Kalan: "+words.length+" kelime\n\nİptal = Baştan başla");
+        if(!cont){clearProgress();words=[...allWords];startSession();return;}
+      }
+      startSession();
     }catch{showError("Dosya okunamadı.");}
   };
   reader.readAsArrayBuffer(file);
@@ -326,18 +454,25 @@ function restartQuiz(){idx=0;score=100;streak=0;correctCount=0;showScreen("quiz"
 function goUpload(){stopSpeech();showScreen("upload");}
 function showScreen(n){document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));document.getElementById("screen-"+n).classList.add("active");}
 
-// ── Mood ──────────────────────────────────────────────────
-function renderMood(eEl,tEl){
-  const mi=Math.min(Math.floor((score/100)*5),4);
-  eEl.innerHTML=MOOD_EMOJIS.map((m,i)=>`<span class="${i===mi?'active':''}">${m}</span>`).join("");
-  tEl.innerHTML=MOOD_COLORS.map((c,i)=>`<div style="background:${c}" class="${i<=mi?'lit':''}"></div>`).join("");
+// ── Score bar ─────────────────────────────────────────────
+function updateScoreBar(){
+  const pct=score;
+  const fill=document.getElementById("scoreFill");
+  const num=document.getElementById("scoreNum");
+  const lbl=document.getElementById("scoreBarLabel");
+  num.textContent=score;
+  fill.style.width=pct+"%";
+  const color=pct>=85?"#22c55e":pct>=70?"#3b82f6":pct>=50?"#f97316":"#ef4444";
+  fill.style.background=color;
+  num.style.color=color;
+  lbl.textContent=pct>=85?"Mükemmel":pct>=70?"İyi":pct>=50?"Orta":"Düşük";
 }
 
 // ── Learn ─────────────────────────────────────────────────
 function renderLearn(){
   phase="learn"; stopSpeech();
   const item=words[idx];
-  renderMood(document.getElementById("moodEmojis"),document.getElementById("moodTrack"));
+  updateScoreBar();
   document.getElementById("progressFill").style.width=(idx/words.length*100)+"%";
   document.getElementById("counter").textContent=(idx+1)+" / "+words.length+" kelime";
   const sb=document.getElementById("streakBadge");
@@ -357,11 +492,8 @@ function renderLearn(){
     ${sentHTML}
   `;
 
-  // pronun target
-  const target=item.sentence||item.word;
   document.getElementById("pronunTarget").innerHTML=
-    item.sentence ? mkSent(item.sentence,item.highlights) : `<strong>${item.word}</strong>`;
-
+    item.sentence?mkSent(item.sentence,item.highlights):`<strong>${item.word}</strong>`;
   resetPronun();
 
   document.getElementById("btnSpkSent").style.display=item.sentence?"":"none";
@@ -382,9 +514,9 @@ function mkSent(sentence,highlights){
 }
 
 // ── TTS ───────────────────────────────────────────────────
-function speakWord(){speak(words[idx].word,"btnSpkWord");}
-function speakSentence(){const s=words[idx].sentence;if(s)speak(s,"btnSpkSent");}
-function speak(text,btnId){
+function speakWord(){speak(words[idx].word);}
+function speakSentence(){const s=words[idx].sentence;if(s)speak(s);}
+function speak(text){
   if(!window.speechSynthesis){alert("Tarayıcın sesi desteklemiyor.");return;}
   speechSynthesis.cancel();
   const u=new SpeechSynthesisUtterance(text);
@@ -392,18 +524,19 @@ function speak(text,btnId){
   const voices=speechSynthesis.getVoices();
   const en=voices.find(v=>v.lang==="en-US"&&v.localService)||voices.find(v=>v.lang.startsWith("en"));
   if(en) u.voice=en;
-  const btn=document.getElementById(btnId);
-  if(btn){btn.classList.add("speaking");u.onend=()=>btn.classList.remove("speaking");}
   speechSynthesis.speak(u);
 }
 if(window.speechSynthesis){speechSynthesis.onvoiceschanged=()=>speechSynthesis.getVoices();speechSynthesis.getVoices();}
 
-// ── Web Speech Recognition ────────────────────────────────
+// ── Speech Recognition + Recording ───────────────────────
 function resetPronun(){
   stopSpeech();
+  lastAudioBlob=null;
+  if(lastAudioURL){URL.revokeObjectURL(lastAudioURL);lastAudioURL=null;}
+  if(audioPlayer){audioPlayer.pause();audioPlayer=null;}
   document.getElementById("pronunResult").style.display="none";
   document.getElementById("pronunResult").innerHTML="";
-  document.getElementById("retryBtn").style.display="none";
+  document.getElementById("playbackRow").style.display="none";
   document.getElementById("liveTranscript").className="live-transcript";
   document.getElementById("liveTranscript").innerHTML="";
   setMicState("idle");
@@ -413,9 +546,9 @@ function setMicState(state){
   const btn=document.getElementById("micBtn");
   const lbl=document.getElementById("micLabel");
   btn.className="mic-btn "+state;
-  if(state==="idle")   {btn.textContent="🎤"; lbl.textContent="Bas ve oku"; lbl.className="mic-label";}
-  if(state==="rec")    {btn.textContent="⏹"; lbl.textContent="Dinleniyor…"; lbl.className="mic-label rec-lbl";}
-  if(state==="loading"){btn.textContent="⏳"; lbl.textContent="Değerlendiriliyor…"; lbl.className="mic-label";}
+  if(state==="idle")   {btn.textContent="🎤";lbl.textContent="Bas ve oku";lbl.className="mic-label";}
+  if(state==="rec")    {btn.textContent="⏹";lbl.textContent="Dinleniyor…";lbl.className="mic-label rec-lbl";}
+  if(state==="loading"){btn.textContent="⏳";lbl.textContent="Değerlendiriliyor…";lbl.className="mic-label";}
 }
 
 function toggleSpeech(){
@@ -424,11 +557,13 @@ function toggleSpeech(){
 }
 
 function startSpeech(){
-  const SpeechRecognition=window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(!SpeechRecognition){
-    alert("Tarayıcın konuşma tanımayı desteklemiyor. Chrome kullan.");return;
-  }
-  recognition=new SpeechRecognition();
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){alert("Chrome gerekli.");return;}
+
+  // also record audio for playback
+  startAudioRecording();
+
+  recognition=new SR();
   recognition.lang="en-US";
   recognition.continuous=false;
   recognition.interimResults=true;
@@ -436,68 +571,100 @@ function startSpeech(){
 
   const lt=document.getElementById("liveTranscript");
   lt.className="live-transcript visible";
-  lt.innerHTML="<em>Dinleniyor…</em>";
+  lt.innerHTML="<em style='color:var(--muted)'>Dinleniyor…</em>";
 
-  recognition.onstart=()=>{isListening=true; setMicState("rec");};
+  recognition.onstart=()=>{isListening=true;setMicState("rec");};
 
   recognition.onresult=e=>{
-    let interim="", final="";
+    let interim="",final="";
     for(let i=e.resultIndex;i<e.results.length;i++){
       const t=e.results[i][0].transcript;
       if(e.results[i].isFinal) final+=t;
       else interim+=t;
     }
     lt.innerHTML=final
-      ? `<span class="heard">${final}</span>`
-      : `<em style="color:#94a3b8">${interim}</em>`;
+      ?`<span class="heard">${final}</span>`
+      :`<em style="color:var(--muted)">${interim}</em>`;
     if(final){
       isListening=false;
+      stopAudioRecording();
       setMicState("loading");
-      // collect all alternatives
       const alts=[];
-      for(let i=0;i<e.results[e.results.length-1].length;i++){
+      for(let i=0;i<e.results[e.results.length-1].length;i++)
         alts.push(e.results[e.results.length-1][i].transcript.trim().toLowerCase());
-      }
-      scorePronunciation(final.trim(), alts);
+      scorePronunciation(final.trim(),alts);
     }
   };
 
   recognition.onerror=e=>{
-    isListening=false; setMicState("idle");
+    isListening=false; stopAudioRecording(); setMicState("idle");
     lt.innerHTML=`<em style="color:var(--red)">Hata: ${e.error==="no-speech"?"Ses algılanamadı, tekrar dene":e.error}</em>`;
   };
-
-  recognition.onend=()=>{ isListening=false; };
-
+  recognition.onend=()=>{isListening=false;};
   recognition.start();
 }
 
 function stopSpeech(){
   if(recognition){try{recognition.stop();}catch(e){}}
+  stopAudioRecording();
   isListening=false;
 }
 
+// ── Audio recording for playback ──────────────────────────
+function startAudioRecording(){
+  audioChunks=[];
+  navigator.mediaDevices.getUserMedia({audio:true}).then(stream=>{
+    const mime=MediaRecorder.isTypeSupported("audio/webm;codecs=opus")?"audio/webm;codecs=opus":
+               MediaRecorder.isTypeSupported("audio/webm")?"audio/webm":
+               MediaRecorder.isTypeSupported("audio/mp4")?"audio/mp4":"";
+    mediaRecorder=new MediaRecorder(stream,mime?{mimeType:mime}:{});
+    mediaRecorder.ondataavailable=e=>{if(e.data.size>0)audioChunks.push(e.data);};
+    mediaRecorder.onstop=()=>{
+      stream.getTracks().forEach(t=>t.stop());
+      if(audioChunks.length>0){
+        lastAudioBlob=new Blob(audioChunks,{type:mime||"audio/webm"});
+        if(lastAudioURL) URL.revokeObjectURL(lastAudioURL);
+        lastAudioURL=URL.createObjectURL(lastAudioBlob);
+      }
+    };
+    mediaRecorder.start();
+  }).catch(()=>{/* mic not available, skip recording */});
+}
+
+function stopAudioRecording(){
+  if(mediaRecorder&&mediaRecorder.state!=="inactive"){
+    try{mediaRecorder.stop();}catch(e){}
+  }
+}
+
+function playRecording(){
+  if(!lastAudioURL){alert("Kayıt bulunamadı.");return;}
+  if(audioPlayer){audioPlayer.pause();audioPlayer=null;}
+  audioPlayer=new Audio(lastAudioURL);
+  const btn=document.getElementById("playRecBtn");
+  btn.textContent="▶ Oynatılıyor…";
+  audioPlayer.play();
+  audioPlayer.onended=()=>{btn.textContent="▶ Kaydımı Dinle";};
+  audioPlayer.onerror=()=>{btn.textContent="▶ Kaydımı Dinle";alert("Ses oynatılamadı.");};
+}
+
 // ── Pronunciation Scoring ─────────────────────────────────
-function scorePronunciation(heard, alternatives){
+function scorePronunciation(heard,alternatives){
   const item=words[idx];
   const target=item.sentence||item.word;
-
-  // normalize
   const norm=s=>s.toLowerCase().replace(/[^a-z\s']/g,"").trim();
   const targetNorm=norm(target);
   const heardNorm=norm(heard);
 
-  // check alternatives too — take best match
-  let bestScore=0, bestHeard=heardNorm;
-  for(const alt of [heardNorm,...alternatives.map(norm)]){
-    const s=calcScore(targetNorm, alt);
-    if(s>bestScore){bestScore=s; bestHeard=alt;}
+  let bestScore=0,bestHeard=heardNorm;
+  for(const alt of[heardNorm,...alternatives.map(norm)]){
+    const s=calcScore(targetNorm,alt);
+    if(s>bestScore){bestScore=s;bestHeard=alt;}
   }
 
   const targetWords=targetNorm.split(/\s+/);
   const heardWords=bestHeard.split(/\s+/);
 
-  // build word comparison
   const comparison=targetWords.map(tw=>{
     const match=heardWords.find(hw=>hw===tw||levenshtein(hw,tw)<=1);
     if(match) return `<span class="w-correct">✓ ${tw}</span>`;
@@ -509,40 +676,37 @@ function scorePronunciation(heard, alternatives){
   const sc=Math.round(bestScore);
   const rc=sc>=85?"excellent":sc>=70?"good":sc>=50?"fair":"poor";
   const label=sc>=85?"Mükemmel 🌟":sc>=70?"İyi 👍":sc>=50?"Gelişiyor 💪":"Tekrar dene 🔄";
-
-  // tips based on missed words
   const missed=targetWords.filter(tw=>!heardWords.find(hw=>hw===tw||levenshtein(hw,tw)<=1));
-  let tip="";
-  if(missed.length===0) tip="Harika! Tüm kelimeleri doğru söyledin.";
-  else if(missed.length<=2) tip=`"${missed.join('", "')}" kelimelerini tekrar dinle ve söyle.`;
-  else tip="Cümleyi yavaşça, kelime kelime söylemeyi dene.";
+  const tip=missed.length===0?"Harika! Tüm kelimeleri doğru söyledin.":
+            missed.length<=2?`"${missed.join('", "')}" kelimelerini tekrar pratik yap.`:
+            "Cümleyi yavaşça, kelime kelime söylemeyi dene.";
 
   document.getElementById("pronunResult").style.display="";
   document.getElementById("pronunResult").innerHTML=`
     <div class="score-ring-wrap">
       <div class="score-ring ${rc}">${sc}</div>
       <div class="score-detail">
-        <div class="score-label">${label}</div>
+        <div class="score-label-txt">${label}</div>
         <div class="score-sub">Duyulan: "${bestHeard||"—"}"</div>
       </div>
     </div>
     <div class="word-comparison">${comparison}</div>
     <div class="pronun-tip">💡 ${tip}</div>
   `;
-  document.getElementById("retryBtn").style.display="";
+
+  // show playback row
+  document.getElementById("playbackRow").style.display="";
   setMicState("idle");
 }
 
-function calcScore(target, heard){
+function calcScore(target,heard){
   if(!heard) return 0;
-  const tw=target.split(/\s+/);
-  const hw=heard.split(/\s+/);
+  const tw=target.split(/\s+/),hw=heard.split(/\s+/);
   let correct=0;
   tw.forEach(t=>{if(hw.find(h=>h===t||levenshtein(h,t)<=1))correct++;});
   const wordScore=(correct/tw.length)*100;
-  // also factor in overall string similarity
   const strScore=(1-levenshtein(target,heard)/Math.max(target.length,heard.length))*100;
-  return Math.round(wordScore*0.7+strScore*0.3);
+  return Math.round(wordScore*.7+strScore*.3);
 }
 
 function levenshtein(a,b){
@@ -579,7 +743,7 @@ function startQuiz(){
   document.getElementById("btnNext").style.display="none";
 }
 
-async function handleAnswer(i){
+function handleAnswer(i){
   if(phase!=="quiz") return;
   phase="feedback";
   const opt=currentOptions[i];
@@ -588,6 +752,7 @@ async function handleAnswer(i){
 
   if(ok){streak++;correctCount++;animCard("bounce");}
   else{score=Math.max(0,score-Math.ceil(100/words.length));streak=0;animCard("shake");}
+  updateScoreBar();
 
   currentOptions.forEach((o,j)=>{
     const btn=document.getElementById("opt"+j);if(!btn)return;
@@ -599,38 +764,24 @@ async function handleAnswer(i){
 
   const sb=document.getElementById("streakBadge");
   if(streak>=2){sb.style.display="";sb.textContent="🔥 "+streak;}else sb.style.display="none";
-  renderMood(document.getElementById("moodEmojis"),document.getElementById("moodTrack"));
 
   const aiBox=document.getElementById("aiBox");
   aiBox.className="ai-box "+(ok?"ok":"fail");
   aiBox.style.display="";
+  aiBox.innerHTML=ok
+    ?`<div class="ai-label ok-lbl">✅ Doğru!</div>${getPositiveFeedback(item.word)}`
+    :`<div class="ai-label fail-lbl">❌ Yanlış</div>Doğru cevap: <strong style="color:#4ade80">${item.tr}</strong>. ${getCorrectiveFeedback(item.word)}`;
 
   const btnN=document.getElementById("btnNext");
   btnN.style.display="";btnN.disabled=false;
   btnN.textContent=idx+1>=words.length?"Sonuçları Gör 🎉":"Sonraki →";
-
-  // Local feedback — no API needed
-  aiBox.innerHTML=ok
-    ? `<div class="ai-label ok-lbl">✅ Doğru!</div>${getPositiveFeedback(item.word)}`
-    : `<div class="ai-label fail-lbl">❌ Yanlış</div>Doğru cevap: <strong>${item.tr}</strong>. ${getCorrectiveFeedback(item.word, item.tr)}`;
 }
 
 function getPositiveFeedback(word){
-  const msgs=[
-    `"${word}" kelimesini aklında tut — çok kullanışlı!`,
-    `Aferin! Bu kelimeyi artık iyi biliyorsun.`,
-    `Mükemmel! Devam et, harika gidiyorsun.`,
-    `Doğru! "${word}" — bu kelime seni ileri taşıyacak.`,
-  ];
-  return msgs[Math.floor(Math.random()*msgs.length)];
+  return["Aferin! Bu kelimeyi artık iyi biliyorsun.","Harika! Devam et, mükemmel gidiyorsun.",`"${word}" — bu kelime seni ileri taşıyacak!`][Math.floor(Math.random()*3)];
 }
-function getCorrectiveFeedback(word, correct){
-  const msgs=[
-    `"${word}" → "${correct}" eşleşmesini aklında tut.`,
-    `Bir dahaki sefere "${word}" gördüğünde "${correct}" aklına gelsin!`,
-    `Bu kelimeyi tekrar karşına geldiğinde hatırlarsın.`,
-  ];
-  return msgs[Math.floor(Math.random()*msgs.length)];
+function getCorrectiveFeedback(word){
+  return["Bir dahaki sefere hatırlarsın!","Bu kelimeyi tekrar karşına geldiğinde bileceksin.","Alıştırma mükemmelleştirir, devam et!"][Math.floor(Math.random()*3)];
 }
 
 // ── Next / Done ───────────────────────────────────────────
@@ -639,8 +790,9 @@ function showDone(){
   showScreen("done");
   document.getElementById("doneMsg").innerHTML=
     `${words.length} kelimeden <strong style="color:var(--green)">${correctCount}</strong> tanesini doğru bildin.`;
-  document.getElementById("scoreBox").textContent="Puan: "+score+" / 100";
-  renderMood(document.getElementById("doneMoodEmojis"),document.getElementById("doneMoodTrack"));
+  document.getElementById("finalScoreBig").textContent=score;
+  document.getElementById("finalScoreSub").textContent=
+    score>=85?"Mükemmel performans! 🌟":score>=70?"İyi iş çıkardın 👍":score>=50?"Daha fazla pratik yap 💪":"Tekrar dene, başarabilirsin! 🔄";
 }
 
 // ── Anim ──────────────────────────────────────────────────
