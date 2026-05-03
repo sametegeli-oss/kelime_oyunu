@@ -3,223 +3,193 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Word Mode Pro</title>
+<title>Word Mode Pro - Advanced Speech</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
-/* --- Tema Değişkenleri --- */
 :root {
   --green:#22c55e; --blue:#3b82f6; --red:#ef4444;
-  --bg:#f1f5f9; --card:#ffffff; --text:#1e293b; --muted:#64748b; --border:#e2e8f0;
+  --bg:#f8fafc; --card:#ffffff; --text:#1e293b; --muted:#64748b; --border:#e2e8f0;
 }
 [data-theme="dark"] {
   --bg:#0f172a; --card:#1e293b; --text:#f1f5f9; --muted:#94a3b8; --border:#334155;
 }
 
-/* --- Orijinal Tasarım Korundu --- */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-body {
-  font-family:'Nunito',sans-serif; background-color: var(--bg); color: var(--text);
-  min-height:100vh; display:flex; justify-content:center; padding:20px 16px; transition: 0.3s;
-}
+body { font-family:'Nunito',sans-serif; background-color: var(--bg); color: var(--text); min-height:100vh; display:flex; justify-content:center; padding:20px 16px; transition: 0.3s; }
 #app { width:100%; max-width:440px; }
-.card { background:var(--card); border-radius:24px; box-shadow:0 8px 40px rgba(0,0,0,0.1); padding:24px 20px; animation:fadeIn .35s ease; border: 1px solid var(--border); }
+.card { background:var(--card); border-radius:24px; box-shadow:0 10px 30px rgba(0,0,0,0.1); padding:24px; border: 1px solid var(--border); position: relative; }
+
+/* Kelime Analiz Görünümü */
+.word-diff-container { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin: 15px 0; font-size: 18px; font-weight: 700; }
+.w-correct { color: var(--green); }
+.w-wrong { color: var(--red); text-decoration: line-through; opacity: 0.7; }
+.w-missing { color: var(--muted); border-bottom: 2px dashed var(--red); }
+
+.score-circle { width: 80px; height: 80px; border-radius: 50%; border: 5px solid var(--blue); display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 900; margin: 10px auto; }
+
+.mic-btn { width:80px; height:80px; border-radius:50%; border:none; cursor:pointer; font-size:30px; margin: 20px auto; display: block; transition: 0.3s; box-shadow: 0 5px 15px rgba(59, 130, 246, 0.3); }
+.mic-idle { background: var(--blue); color: white; }
+.mic-rec { background: var(--red); color: white; animation: pulse 1.5s infinite; }
+
+@keyframes pulse { 0% {box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);} 70% {box-shadow: 0 0 0 15px rgba(239, 68, 68, 0);} 100% {box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);} }
+
+/* Orijinal CSS yapısı devamı */
+.theme-toggle { position: absolute; top: -50px; right: 0; background: var(--card); border: 1px solid var(--border); padding: 8px; border-radius: 50%; cursor: pointer; }
+.hl { color: var(--green); font-weight: 800; }
 .screen { display:none; } .active { display:block; }
-
-/* Tema Butonu */
-.theme-toggle { position: fixed; top: 10px; right: 10px; z-index: 100; background: var(--card); border: 1px solid var(--border); padding: 8px; border-radius: 50%; cursor: pointer; }
-
-/* Kelime Kartı ve Diğerleri (Orijinal Stiller) */
-.word-card { background:rgba(59,130,246,0.05); border-radius:16px; padding:18px; margin-bottom:14px; border:1px solid var(--border); }
-.big-word { font-size:32px; font-weight:900; color:var(--green); }
-.phonetic { color:#7c3aed; font-style:italic; margin-bottom:4px; }
-.sentence .hl { color:var(--green); font-weight:800; }
-
-/* Mikrofon Paneli */
-.pronun-panel { background:rgba(124, 58, 237, 0.05); border:1.5px solid #d8b4fe; border-radius:16px; padding:16px; margin-bottom:14px; }
-.mic-btn { width:70px; height:70px; border-radius:50%; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:28px; margin: 10px auto; transition: 0.2s; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-.mic-btn.idle { background: #7c3aed; color: white; }
-.mic-btn.rec { background: #ef4444; color: white; animation: pulse 1s infinite; }
-
-/* Puan Halkası */
-.score-ring { width:64px; height:64px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:20px; font-weight:900; color:#fff; background: var(--blue); }
-
-@keyframes pulse { 0% {transform: scale(1)} 50% {transform: scale(1.1)} 100% {transform: scale(1)} }
-@keyframes fadeIn { from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none} }
-
-/* Eklenen diğer orijinal stiller... */
-.btn-primary { width:100%; padding:15px; background:var(--blue); color:#fff; border:none; border-radius:16px; font-size:17px; font-weight:800; cursor:pointer; }
-.tts-btn { flex:1; padding:10px; border-radius:12px; border:none; font-weight:700; cursor:pointer; margin: 5px; }
-.progress-track { height:8px; background:var(--border); border-radius:8px; margin-bottom:18px; overflow:hidden; }
-.progress-fill { height:100%; background:linear-gradient(90deg,var(--blue),var(--green)); transition:width .5s ease; }
+.btn-primary { width:100%; padding:16px; background:var(--blue); color:white; border:none; border-radius:15px; font-weight:800; cursor:pointer; margin-top:10px; }
 </style>
 </head>
 <body data-theme="light">
 
-<button class="theme-toggle" onclick="toggleTheme()">🌓</button>
-
 <div id="app">
   <div id="screen-upload" class="screen active">
     <div class="card" style="text-align:center">
-      <span style="font-size:50px">📚</span>
       <h1>Word Mode Pro</h1>
-      <p style="color:var(--muted); margin:10px 0">Excel dosyanı yükle veya devam et</p>
-      <div id="dropZone" onclick="document.getElementById('fileInput').click()" style="border:2px dashed var(--blue); padding:40px; border-radius:20px; cursor:pointer; background:rgba(59,130,246,0.05)">
-        📂 Dosyayı Seç
-      </div>
-      <input type="file" id="fileInput" accept=".xlsx,.xls" style="display:none">
-      <button id="resumeBtn" class="btn-primary" style="display:none; margin-top:20px; background:var(--green)" onclick="resumeSession()">💾 Kaldığın Yerden Devam Et</button>
+      <p style="margin:20px 0; color:var(--muted)">Hafıza ve Gelişmiş Telaffuz Destekli</p>
+      <input type="file" id="fileInput" accept=".xlsx,.xls" hidden>
+      <button class="btn-primary" onclick="document.getElementById('fileInput').click()">📁 Excel Yükle</button>
+      <button id="resumeBtn" class="btn-primary" style="display:none; background:var(--green); margin-top:10px;" onclick="resumeSession()">💾 Devam Et</button>
     </div>
   </div>
 
   <div id="screen-quiz" class="screen">
-    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
-    <div class="card" id="mainCard">
-      <div class="word-card" id="wordCard"></div>
-
-      <div style="display:flex" id="ttsRow">
-        <button class="tts-btn" style="background:#eff6ff; color:#1d4ed8" onclick="speakWord()">🔊 Kelime</button>
-        <button class="tts-btn" style="background:#f0fdf4; color:#15803d" onclick="speakSentence()">🔊 Cümle</button>
+    <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+    <div class="card">
+      <div id="wordDisplay" style="text-align:center; margin-bottom:20px"></div>
+      
+      <div id="pronunSection" style="background:rgba(59,130,246,0.03); padding:15px; border-radius:20px; border:1px dashed var(--border)">
+        <p style="text-align:center; font-size:14px; color:var(--muted)">Şunu Söyleyin:</p>
+        <p id="targetSentence" style="text-align:center; font-weight:800; margin:5px 0"></p>
+        
+        <button id="micBtn" class="mic-btn mic-idle" onclick="toggleSpeech()">🎤</button>
+        <div id="diffOutput" class="word-diff-container"></div>
+        <div id="scoreDisplay"></div>
       </div>
 
-      <div class="pronun-panel" id="pronunPanel">
-        <h4 style="font-size:13px; color:#7c3aed">🎤 Telaffuz Pratiği</h4>
-        <div id="pronunTarget" style="margin:10px 0; font-weight:700"></div>
-        <button class="mic-btn idle" id="micBtn" onclick="toggleSpeech()">🎤</button>
-        <div id="liveTranscript" style="font-size:14px; font-style:italic; text-align:center"></div>
-        <div id="pronunResult" style="display:none; margin-top:10px"></div>
-      </div>
-
-      <div id="quizArea" style="display:none">
-        <div id="optionsList" style="display:flex; flex-direction:column; gap:10px"></div>
-      </div>
-
-      <button class="btn-primary" id="btnNext" onclick="nextWord()" style="margin-top:15px">Sonraki →</button>
+      <button class="btn-primary" onclick="nextWord()">Sonraki Kelime →</button>
     </div>
   </div>
 </div>
 
 <script>
-// --- State & Storage ---
-let words=[], idx=0, score=100, correctCount=0;
-let isListening = false;
-let recognition = null;
+let words = [], idx = 0, isListening = false;
+const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+recognition.lang = 'en-US';
+recognition.interimResults = false;
 
-window.onload = () => {
-  if(localStorage.getItem('wm_theme') === 'dark') document.body.setAttribute('data-theme', 'dark');
-  if(localStorage.getItem('wm_state')) document.getElementById('resumeBtn').style.display = 'block';
-};
-
+// --- Tema ve Hafıza ---
 function toggleTheme() {
-  const theme = document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-  document.body.setAttribute('data-theme', theme);
-  localStorage.setItem('wm_theme', theme);
+  const t = document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  document.body.setAttribute('data-theme', t);
+  localStorage.setItem('wm_theme', t);
 }
 
-function saveProgress() {
-  localStorage.setItem('wm_state', JSON.stringify({words, idx, score, correctCount}));
-}
+function save() { localStorage.setItem('wm_state', JSON.stringify({words, idx})); }
 
 function resumeSession() {
-  const saved = JSON.parse(localStorage.getItem('wm_state'));
-  words = saved.words; idx = saved.idx; score = saved.score; correctCount = saved.correctCount;
-  showScreen('quiz'); renderLearn();
+  const s = JSON.parse(localStorage.getItem('wm_state'));
+  words = s.words; idx = s.idx;
+  startApp();
 }
 
-// --- Dosya İşlemleri ---
+// --- Dosya Yükleme ---
 document.getElementById('fileInput').addEventListener('change', e => {
   const reader = new FileReader();
   reader.onload = (e) => {
-    const data = new Uint8Array(e.target.result);
-    const wb = XLSX.read(data, {type:'array'});
-    const json = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]);
-    words = json.map(r => ({
-      word: r.word, tr: r.translation, phonetic: r.phonetic || '',
-      sentence: r.sentence || '', sentenceTr: r.sentenceTr || ''
-    })).filter(w => w.word && w.tr);
-    idx = 0; saveProgress(); showScreen('quiz'); renderLearn();
+    const wb = XLSX.read(new Uint8Array(e.target.result), {type:'array'});
+    words = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]).map(r => ({
+      word: r.word, tr: r.translation, sent: r.sentence || r.word, ph: r.phonetic || ''
+    }));
+    idx = 0; save(); startApp();
   };
   reader.readAsArrayBuffer(e.target.files[0]);
 });
 
-// --- Orijinal Fonksiyonlar Geri Geldi ---
-function showScreen(n){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); document.getElementById('screen-'+n).classList.add('active');}
+function startApp() {
+  document.getElementById('screen-upload').classList.remove('active');
+  document.getElementById('screen-quiz').classList.add('active');
+  render();
+}
 
-function renderLearn() {
+function render() {
   const item = words[idx];
-  document.getElementById('progressFill').style.width = (idx/words.length*100) + "%";
-  document.getElementById('wordCard').innerHTML = `
-    <div class="big-word">${item.word}</div>
-    <div class="phonetic">${item.phonetic}</div>
-    <div style="font-style:italic; margin-bottom:10px">${item.tr}</div>
-    <div class="sentence">${item.sentence.replace(item.word, `<span class="hl">${item.word}</span>`)}</div>
-    <div style="font-size:13px; color:var(--muted)">${item.sentenceTr}</div>
+  document.getElementById('wordDisplay').innerHTML = `
+    <h1 style="font-size:36px; color:var(--green)">${item.word}</h1>
+    <p style="font-style:italic; color:var(--muted)">${item.ph} - ${item.tr}</p>
   `;
-  document.getElementById('pronunTarget').textContent = item.sentence || item.word;
-  resetPronun();
+  document.getElementById('targetSentence').textContent = item.sent;
+  document.getElementById('diffOutput').innerHTML = '';
+  document.getElementById('scoreDisplay').innerHTML = '';
+  save();
 }
 
-// --- Seslendirme (TTS) ---
-function speakWord() { speak(words[idx].word); }
-function speakSentence() { speak(words[idx].sentence); }
-function speak(txt) {
-  const u = new SpeechSynthesisUtterance(txt);
-  u.lang = 'en-US';
-  window.speechSynthesis.speak(u);
-}
-
-// --- Telaffuz (Speech Recognition) ---
+// --- Gelişmiş Telaffuz Analizi ---
 function toggleSpeech() {
-  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if(!SpeechRecognition) return alert("Tarayıcı desteklemiyor");
-  
   if(isListening) { recognition.stop(); return; }
-  
-  recognition = new SpeechRecognition();
-  recognition.lang = 'en-US';
-  recognition.onstart = () => { isListening=true; document.getElementById('micBtn').className='mic-btn rec'; };
-  recognition.onend = () => { isListening=false; document.getElementById('micBtn').className='mic-btn idle'; };
-  
-  recognition.onresult = (e) => {
-    const heard = e.results[0][0].transcript;
-    document.getElementById('liveTranscript').textContent = "Duyulan: " + heard;
-    calculatePronunScore(heard);
-  };
   recognition.start();
 }
 
-function calculatePronunScore(heard) {
-  const target = (words[idx].sentence || words[idx].word).toLowerCase().replace(/[.,!]/g,'');
-  const heardClean = heard.toLowerCase();
-  // Basit benzerlik mantığı (Levenshtein veya kelime bazlı)
-  const score = heardClean === target ? 100 : 70; // Basitleştirilmiş
-  
-  const res = document.getElementById('pronunResult');
-  res.style.display = "block";
-  res.innerHTML = `
-    <div style="display:flex; align-items:center; gap:10px">
-      <div class="score-ring">${score}</div>
-      <div>${score > 80 ? 'Mükemmel!' : 'Güzel, tekrarla.'}</div>
-    </div>
-  `;
-}
+recognition.onstart = () => { isListening=true; document.getElementById('micBtn').className='mic-btn mic-rec'; };
+recognition.onend = () => { isListening=false; document.getElementById('micBtn').className='mic-btn mic-idle'; };
 
-function resetPronun() {
-  document.getElementById('liveTranscript').textContent = "";
-  document.getElementById('pronunResult').style.display = "none";
+recognition.onresult = (e) => {
+  const heard = e.results[0][0].transcript.toLowerCase().replace(/[.,!]/g,'');
+  const target = words[idx].sent.toLowerCase().replace(/[.,!]/g,'');
+  
+  compareAndDisplay(target, heard);
+};
+
+function compareAndDisplay(target, heard) {
+  const targetWords = target.split(' ');
+  const heardWords = heard.split(' ');
+  const output = document.getElementById('diffOutput');
+  output.innerHTML = '';
+
+  let correctCount = 0;
+  
+  targetWords.forEach((tw, i) => {
+    const hw = heardWords[i] || "";
+    const span = document.createElement('span');
+    
+    // Levenshtein benzerliği (basit)
+    if(tw === hw) {
+      span.className = 'w-correct';
+      span.textContent = tw;
+      correctCount++;
+    } else if (hw === "") {
+      span.className = 'w-missing';
+      span.textContent = tw;
+    } else {
+      span.className = 'w-wrong';
+      span.textContent = hw; // Yanlış söylenen
+      const correctSpan = document.createElement('span');
+      correctSpan.style.fontSize = '12px';
+      correctSpan.style.display = 'block';
+      correctSpan.style.color = 'var(--muted)';
+      correctSpan.textContent = `(${tw})`;
+      span.appendChild(correctSpan);
+    }
+    output.appendChild(span);
+  });
+
+  const finalScore = Math.round((correctCount / targetWords.length) * 100);
+  document.getElementById('scoreDisplay').innerHTML = `
+    <div class="score-circle" style="border-color:${finalScore > 70 ? 'var(--green)' : 'var(--red)'}">
+      ${finalScore}
+    </div>
+    <p style="text-align:center; font-weight:700">Başarı Oranı</p>
+  `;
 }
 
 function nextWord() {
   idx++;
-  if(idx < words.length) {
-    saveProgress();
-    renderLearn();
-  } else {
-    alert("Bitti!");
-    localStorage.removeItem('wm_state');
-    location.reload();
-  }
+  if(idx < words.length) render();
+  else alert("Tüm kelimeler bitti!");
 }
+
+if(localStorage.getItem('wm_state')) document.getElementById('resumeBtn').style.display='block';
+if(localStorage.getItem('wm_theme')==='dark') toggleTheme();
 </script>
 </body>
 </html>
