@@ -1,22 +1,22 @@
-const CACHE_NAME = 'word-mode-v4';
-
+const CACHE_NAME = 'word-mode-v5';
+ 
 self.addEventListener('install', event => {
   console.log('Service Worker yüklendi');
 });
-
+ 
 self.addEventListener('fetch', event => {
   event.respondWith(
     caches.match(event.request).then(response => response || fetch(event.request))
   );
 });
-
+ 
 self.addEventListener('notificationclick', event => {
   event.notification.close();
   event.waitUntil(
     clients.openWindow('/kelime_oyunu/')
   );
 });
-
+ 
 self.addEventListener('message', event => {
   if (event.data && event.data.type === 'SHOW_NOTIFICATION') {
     self.registration.showNotification(event.data.title, {
@@ -28,3 +28,4 @@ self.addEventListener('message', event => {
     });
   }
 });
+ 
