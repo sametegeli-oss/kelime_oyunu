@@ -1,31 +1,47 @@
-const CACHE_NAME = 'word-mode-v5';
- 
+const CACHE_NAME = 'word-mode-v6';
+
 self.addEventListener('install', event => {
-  console.log('Service Worker yüklendi');
+  self.skipWaiting();
 });
- 
+
+self.addEventListener('activate', event => {
+  event.waitUntil(
+    caches.keys().then(keys =>
+      Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))
+    )
+  );
+  self.clients.claim();
+});
+
 self.addEventListener('fetch', event => {
   event.respondWith(
-    caches.match(event.request).then(response => response || fetch(event.request))
+    caches.match(event.request).then(r => r || fetch(event.request))
   );
 });
- 
+
+self.addEventListener('message', event => {
+  if (!event.data || event.data.type !== 'SHOW_NOTIFICATION') return;
+  
+  const title = event.data.title || '📚 Word Mode';
+  const body = event.data.body || 'Kelime çalışma zamanı!';
+  const tag = event.data.tag || 'word-mode';
+
+  self.registration.showNotification(title, {
+    body: body,
+    icon: '/kelime_oyunu/icon-192.png',
+    badge: '/kelime_oyunu/icon-192.png',
+    vibrate: [200, 100, 200],
+    tag: tag,
+    renotify: true
+  });
+});
+
 self.addEventListener('notificationclick', event => {
   event.notification.close();
   event.waitUntil(
-    clients.openWindow('/kelime_oyunu/')
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then(list => {
+      if (list.length > 0) return list[0].focus();
+      return clients.openWindow('/kelime_oyunu/');
+    })
   );
 });
- 
-self.addEventListener('message', event => {
-  if (event.data && event.data.type === 'SHOW_NOTIFICATION') {
-    self.registration.showNotification(event.data.title, {
-      body: event.data.body,
-      icon: 'https://cdn-icons-png.flaticon.com/512/5968/5968890.png',
-      badge: 'https://cdn-icons-png.flaticon.com/512/5968/5968890.png',
-      vibrate: [200, 100, 200],
-      tag: event.data.tag || 'daily-reminder'
-    });
-  }
-});
- 
