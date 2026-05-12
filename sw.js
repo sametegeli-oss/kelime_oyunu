@@ -16,16 +16,14 @@ self.addEventListener('fetch', event => {
 
 self.addEventListener('message', event => {
   if (!event.data || event.data.type !== 'SHOW_NOTIFICATION') return;
-  event.waitUntil(
-    self.registration.showNotification(event.data.title || '📚 Word Mode', {
-      body: event.data.body || 'Kelime çalışma zamanı!',
-      icon: '/kelime_oyunu/icon-192.png',
-      badge: '/kelime_oyunu/icon-192.png',
-      vibrate: [200, 100, 200],
-      tag: event.data.tag || 'word-mode',
-      renotify: true
-    })
-  );
+  self.registration.showNotification(event.data.title || '📚 Word Mode', {
+    body: event.data.body || 'Kelime çalışma zamanı!',
+    icon: '/kelime_oyunu/icon-192.png',
+    badge: '/kelime_oyunu/icon-192.png',
+    vibrate: [200, 100, 200],
+    tag: event.data.tag || 'word-mode',
+    renotify: true
+  });
 });
 
 self.addEventListener('notificationclick', event => {
