@@ -35,3 +35,17 @@ self.addEventListener('notificationclick', event => {
     })
   );
 });
+
+self.addEventListener('message', event => {
+    if (event.data && event.data.type === 'SHOW_NOTIFICATION') {
+        const { title, body, options } = event.data;
+        
+        self.registration.showNotification(title, {
+            body: body,
+            icon: "https://cdn-icons-png.flaticon.com/512/5968/5968890.png",
+            badge: "https://cdn-icons-png.flaticon.com/512/5968/5968890.png",
+            vibrate: [200, 100, 200],
+            ...options
+        });
+    }
+});
